@@ -15,6 +15,7 @@
 using namespace std;
 int main(int argc, char *argv[])
 {
+    QApplication app(argc, argv);
     QFile file("output.txt");
        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
            // Handle error
