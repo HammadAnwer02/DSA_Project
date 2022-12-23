@@ -14,7 +14,7 @@ class MainWindow : public QWidget
     Q_OBJECT
 
 public:
-    MainWindow();
+    MainWindow(QVector<QVector<int>> &v);
 
 private slots:
     void zoomIn();

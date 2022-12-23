@@ -1,17 +1,32 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(QVector<QVector<int>> &v)
 {
-    // Create a QImage with the desired size and format
-    QImage image(400, 400, QImage::Format_RGB888);
 
+
+    // Create a QImage with the desired size and format
+    QImage image(151, 148, QImage::Format_RGB888);
+    qDebug() << v.size() << " " << v[0].size();
+
+
+
+
+try{
     // Set all pixels to green
-    for (int i = 0; i < image.width(); i++) {
-        for (int j = 0; j < image.height(); j++) {
-            image.setPixel(i, j, qRgb(0, 255, 0));
+    for (int i = 0; i < image.height(); i++) {
+        for (int j = 0; j < image.width(); j++) {
+            if (v[i][j]==1){
+            image.setPixel(i, j, qRgb(0, 128, 0));
+        }
+            else if (v[i][j]==0){
+                image.setPixel(i, j, qRgb(0, 0, 0));
+            }
         }
     }
-
+}
+    catch (const std::out_of_range &exception){
+        qDebug()<<"Out of range" << exception.what();
+    }
     // Create a QGraphicsView to display the image
     view = new QGraphicsView();
     view->setRenderHint(QPainter::Antialiasing);
