@@ -57,22 +57,30 @@ void mean(float a[][150])
 
 int main()
 {
-    const int rows = 150;
-    const int column = 4;
-    float a[rows][column];
+
+    float **a;
 
     // storing input data in a matrix/2d array
     fstream input;
-    input.open("data.txt", ios::in);
+    input.open("data.txt", ios::in); //write your input txt file here
     if (!input)
     {
         cout << "No such file";
     }
     else
     {
+        string line;
+        int rows,cols;
+        input >> rows;
+        input >> cols;  
+        a = new float*[rows];
+        for (int row=0; row<rows; row++){
+            a[row]= new float[cols]; 
+        }
+        cout << rows << " " << cols;
         for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < column; j++)
+            for (int j = 0; j < cols; j++)
             {
                 input >> a[i][j];
             }
@@ -94,8 +102,7 @@ int main()
         }
     }
 
-    cout << endl
-         << endl;
+    cout << endl;
 
     mean(coef);
 
@@ -104,9 +111,9 @@ int main()
     {
         for (int j = 0; j < 150; j++)
         {
-            cout << coef[i][j] << '\t';
+            myfile << coef[i][j] << '\t';
         }
-        cout << endl;
+        myfile << endl;
     }
 
     myfile.close();
