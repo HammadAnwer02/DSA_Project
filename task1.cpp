@@ -98,13 +98,7 @@ int main()
          << endl;
 
     mean(coef);
-    for (int i = 0; i < 150; i++)
-    {
-        for (int j = 0; j < 150; j++)
-        {
-            myfile << coef[i][j];
-        }
-    }
+
 
     for (int i = 0; i < 150; i++)
     {
