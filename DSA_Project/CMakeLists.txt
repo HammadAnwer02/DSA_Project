@@ -19,6 +19,8 @@ set(PROJECT_SOURCES
         matrix.cpp
         matrix.h
         matrix.ui
+        mainwindow.cpp
+        mainwindow.h
         ${TS_FILES}
 )
 
