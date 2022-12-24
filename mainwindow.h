@@ -8,6 +8,9 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QFileDialog>
+#include <QTextStream>
+#include <QTextEdit>
 
 class MainWindow : public QWidget
 {
@@ -15,13 +18,21 @@ class MainWindow : public QWidget
 
 public:
     MainWindow(QVector<QVector<int>> &v);
+       void openFile();
+       void closeFile();
 
 private slots:
     void zoomIn();
     void zoomOut();
 
+
 private:
     QGraphicsView *view;
+    QTextEdit *textEdit;
+    QWidget *textWidget;
+    QVBoxLayout *textLayout;
+    QPushButton *closeButton;
+    QHBoxLayout *buttonLayout;
 };
 
 #endif // MAINWINDOW_H

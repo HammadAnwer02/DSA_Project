@@ -12,6 +12,10 @@
 #include <iostream>
 #include <QString>
 #include <fstream>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMainWindow>
+#include "mainwindow.h"
 using namespace std;
 int main(int argc, char *argv[])
 {
@@ -48,6 +52,20 @@ int main(int argc, char *argv[])
        // Close the file
        file.close();
     MainWindow window(matrix);
+    //menu
+    QMenuBar *menuBar = new QMenuBar(&window);
+    menuBar->setNativeMenuBar(menuBar);
+    QMenu *fileMenu = new QMenu("File", &window);
+    menuBar->addMenu(fileMenu);
+    QAction *openAction = new QAction("Open", &window);
+    fileMenu->addAction(openAction);
+    window.connect(openAction, &QAction::triggered, &window, &MainWindow::openFile);
+    QAction *saveAction = new QAction("Save", &window);
+    fileMenu->addAction(saveAction);
+    QMenu *editMenu = new QMenu("Edit", &window);
+    menuBar->addMenu(editMenu);
+    QMenu *formatMenu = new QMenu("Format", &window);
+    editMenu->addMenu(formatMenu);
     window.showFullScreen();
     window.show();
     return app.exec();

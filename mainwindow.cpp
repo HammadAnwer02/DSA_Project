@@ -70,3 +70,37 @@ void MainWindow::zoomOut()
 {
     view->scale(1 / 1.2, 1 / 1.2);
 }
+
+void MainWindow::openFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Text Files (*.txt)"));
+
+    textWidget = new QWidget(this);
+    textLayout = new QVBoxLayout(textWidget);
+
+    textEdit = new QTextEdit(this);
+        layout()->addWidget(textEdit);
+        if (!fileName.isEmpty()) {
+            QFile file(fileName);
+            if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                QTextStream in(&file);
+                QString text = in.readAll();
+                file.close();
+                textEdit->setText(text);
+            }
+        }
+        textLayout->addWidget(textEdit);
+        closeButton = new QPushButton("Close", this);
+        buttonLayout = new QHBoxLayout();
+        buttonLayout->addWidget(closeButton);
+        textLayout->addLayout(buttonLayout);
+        layout()->addWidget(textWidget);
+        connect(closeButton, &QPushButton::clicked, this, &MainWindow::closeFile);
+}
+
+void MainWindow::closeFile()
+{
+    textEdit->clear();
+    textEdit->close();
+    closeButton->hide();
+}
