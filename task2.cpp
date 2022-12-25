@@ -5,6 +5,7 @@
 using namespace std;
 
 // function to shuffle rows
+    float signature[150];
 void shuFFleing(float a[150][4])
 { 
     // uncooment to see output on console
@@ -57,7 +58,7 @@ void calc(float a[150][4])
             rowsum = rowsum + a[i][j];
         }
         sum[i] = rowsum;
-        rowmean = rowsum / 3;
+        rowmean = rowsum / 4;
         mean[i] = rowmean;
     }
     cout << "Mean values of rows are" << endl;
@@ -69,7 +70,6 @@ void calc(float a[150][4])
          << endl;
 
     // signature for each row
-    float signature[150];
     for (int i = 0; i < 150; i++)
     {
         signature[i] = mean[i] * sum[i];
@@ -84,23 +84,35 @@ void calc(float a[150][4])
     cout << endl
          << endl; */
 
-    float smallest;
-    for (int i = 0; i < 149; i++)
-    {
-        smallest = 1000;
-        for (int j = 0; j < 150; j++)
-        {
-            if (signature[j] < smallest)
-            {
-                smallest = signature[j];
-            }
-        }
-        for (int k = 0; k < 150; k++)
-        {
-            if (signature[k] == smallest)
-            {
-                swap(a[i], a[k]);
-                signature[k] == 10000;
+    // float smallest;
+    // for (int i = 0; i < 149; i++)
+    // {
+    //     smallest = 1000;
+    //     for (int j = 0; j < 150; j++)
+    //     {
+    //         if (signature[j] < smallest)
+    //         {
+    //             smallest = signature[j];
+    //         }
+    //     }
+    //     for (int k = 0; k < 150; k++)
+    //     {
+    //         if (signature[k] == smallest)
+    //         {
+    //             swap(a[i], a[k]);
+    //             signature[k] == 10000;
+    //         }
+    //     }
+    // }
+
+
+    for (int i = 0 ; i < 149; i++) {
+        for (int j = i + 1; j < 150; j++) {
+            if (signature[j] < signature[i]) {
+                for (int k = 0; k < 4; k++) {
+                    swap(a[i][k], a[j][k]);
+                }
+                swap(signature[j], signature[i]);
             }
         }
     }
@@ -111,6 +123,7 @@ void calc(float a[150][4])
         {
             cout << a[i][j] << '\t';
         }
+        cout << signature[i] << '\t';
         cout << endl;
     }
     cout << endl
