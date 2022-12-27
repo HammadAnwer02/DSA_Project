@@ -16,11 +16,30 @@
 #include <QMenuBar>
 #include <QMainWindow>
 #include "mainwindow.h"
+#include <vector>
 using namespace std;
+
+
+
+
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QFile file("output.txt");
+    std::vector<Cluster> clusters;
+
+    // Create nodes and edges and add them to a cluster
+    Node node1{10, 20};
+    Node node2{30, 40};
+    Edge edge{node1, node2, 5};
+    Cluster cluster;
+    cluster.nodes.push_back(node1);
+    cluster.nodes.push_back(node2);
+    cluster.edges.push_back(edge);
+
+    // Add the cluster to the vector
+    clusters.push_back(cluster);
+    QFile file("output1.txt");
        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
            // Handle error
 
@@ -28,10 +47,6 @@ int main(int argc, char *argv[])
 
        // Create a text stream for reading the file
        QTextStream in(&file);
-
-       // Read the number of rows and columns from the first two lines of the file
-       int rows = in.readLine().toInt();
-       int columns = in.readLine().toInt();
 
        // Read the data from the rest of the file
        QVector<QVector<int>> matrix;
@@ -43,6 +58,7 @@ int main(int argc, char *argv[])
            QVector<int> row;
            for (const QString& value : values) {
                row.append(value.toInt());
+
            }
 
            // Add the vector to the matrix
@@ -51,21 +67,24 @@ int main(int argc, char *argv[])
 
        // Close the file
        file.close();
-    MainWindow window(matrix);
+//    MainWindow window(matrix);
+    MainWindow window(clusters);
     //menu
-    QMenuBar *menuBar = new QMenuBar(&window);
-    menuBar->setNativeMenuBar(menuBar);
-    QMenu *fileMenu = new QMenu("File", &window);
-    menuBar->addMenu(fileMenu);
-    QAction *openAction = new QAction("Open", &window);
-    fileMenu->addAction(openAction);
-    window.connect(openAction, &QAction::triggered, &window, &MainWindow::openFile);
-    QAction *saveAction = new QAction("Save", &window);
-    fileMenu->addAction(saveAction);
-    QMenu *editMenu = new QMenu("Edit", &window);
-    menuBar->addMenu(editMenu);
-    QMenu *formatMenu = new QMenu("Format", &window);
-    editMenu->addMenu(formatMenu);
+//    QMenuBar *menuBar = new QMenuBar(&window);
+//    menuBar->setNativeMenuBar(menuBar);
+//    QMenu *fileMenu = new QMenu("File", &window);
+//    menuBar->addMenu(fileMenu);
+//    QAction *openAction = new QAction("Open", &window);
+//    fileMenu->addAction(openAction);
+//    window.connect(openAction, &QAction::triggered, &window, &MainWindow::openFile);
+//    QAction *saveAction = new QAction("Save", &window);
+//    fileMenu->addAction(saveAction);
+//    QMenu *editMenu = new QMenu("Edit", &window);
+//    menuBar->addMenu(editMenu);
+//    QMenu *formatMenu = new QMenu("Format", &window);
+//    editMenu->addMenu(formatMenu);
+
+
     window.showFullScreen();
     window.show();
     return app.exec();
