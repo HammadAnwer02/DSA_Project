@@ -12,29 +12,8 @@
 #include <QTextStream>
 #include <QTextEdit>
 #include <iostream>
+#include "Graph.h"
 using namespace std;
-class Node
-{
-public:
-  int x;
-  int y;
-  // Other node properties, such as weight, label, etc.
-};
-class Edge
-{
-public:
-  Node from;
-  Node to;
-  int weight;
-  // Other edge properties, such as label, color, etc.
-};
-class Cluster
-{
-public:
-  std::vector<Node> nodes;
-  std::vector<Edge> edges;
-  // Other cluster properties, such as size, label, etc.
-};
 
 class MainWindow : public QWidget
 {
@@ -49,8 +28,6 @@ private slots:
     void zoomIn();
     void zoomOut();
     void showGraph();
-
-
 
 private:
     QGraphicsView *view;

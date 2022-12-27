@@ -9,10 +9,10 @@ MainWindow::MainWindow(std::vector<Cluster>& clusters) : clusters(clusters)
 
       // Add the button to the layout
       mainLayout->addWidget(showGraphButton);
-      setLayout(mainLayout);
 
       // Connect the button to the showGraph slot function
       connect(showGraphButton, &QPushButton::clicked, this, &MainWindow::showGraph);
+      setLayout(mainLayout);
 //    // Create a QImage with the desired size and format
 //    QImage image(150, 150, QImage::Format_RGB888);
 //    qDebug() << v.size() << " " << v[0].size();
@@ -115,17 +115,29 @@ void MainWindow::closeFile()
 }
 void MainWindow::showGraph()
 {
-    int nodeRadius=5;
+    int nodeRadius= 5;
   // Create a QGraphicsView widget and a QGraphicsScene
   QGraphicsView* view = new QGraphicsView;
   QGraphicsScene* scene = new QGraphicsScene;
+    int color = 0;
 
   // Iterate through the clusters and create a QGraphicsItem for each node and edge
   for (const auto& cluster : clusters) {
-    // Create a QGraphicsEllipseItem for each node in the cluster
+
+      // Create a QGraphicsEllipseItem for each node in the cluster
     for (const auto& node : cluster.nodes) {
       QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(node.x - nodeRadius, node.y - nodeRadius, 2 * nodeRadius, 2 * nodeRadius);
+      if (color==0){
+
+
       ellipse->setBrush(QBrush(Qt::black));  // Set the fill color
+      }
+      else if(color==1) {
+          ellipse->setBrush(QBrush(Qt::red));
+      }
+      else if(color==2){
+          ellipse->setBrush(QBrush(Qt::green));
+      }
       ellipse->setPen(QPen(Qt::black));  // Set the outline color and width
       scene->addItem(ellipse);
     }
@@ -137,6 +149,7 @@ void MainWindow::showGraph()
       lineItem->setPen(QPen(Qt::black, edge.weight));  // Set the pen style, width, and color
       scene->addItem(lineItem);
     }
+    color++;
   }
 
   // Set the scene for the view and add the view to the layout

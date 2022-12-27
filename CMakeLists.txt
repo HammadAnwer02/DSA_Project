@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
         matrix.ui
         mainwindow.cpp
         mainwindow.h
+        helper.h
+        Graph.h
         ${TS_FILES}
 )
 
