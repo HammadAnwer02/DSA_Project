@@ -1,9 +1,10 @@
 #include "helper.h"
+#include "Graph.h"
 
 int main()
 {
 
-    std::vector<std::vector<float>> data;
+    std::vector<std::vector<double>> data;
     data.resize(150);
     for (auto &row : data)
     {
@@ -30,23 +31,31 @@ int main()
 
     shuFFleing(data);
 
-    vector<vector<float>> coeff;
+    vector<vector<double>> coeff;
     coeff.resize(150);
     for (auto &row : coeff)
     {
         row.resize(150);
     }
 
+    ofstream output("outputmatrix.txt");
     for (size_t i = 0; i < 150; i++)
     {
         for (size_t j = 0; j < 150; j++)
         {
-            coeff[i][j] = correlationCoefficient(data[i], data[j], 4);
+            coeff[i][j] = pearson(data[i], data[j]);
+            output << coeff[i][j] << " ";
+            
         }
+        output << endl;
     }
+    output.close();
+    cout << endl;
+
+
 
     cout << "Enter a threshold value for the edges: ";
-    float threshold;
+    double threshold;
     cin >> threshold;
     for (size_t i = 0; i < 150; i++)
     {
@@ -59,12 +68,12 @@ int main()
         }
     }
 
-    vector<float> nodeWeights;
+    vector<double> nodeWeights;
     nodeWeights.resize(150);
 
     for (size_t i = 0; i < 150; i++)
     {
-        float sumWeights = 0;
+        double sumWeights = 0;
         for (size_t j = 0; j < 150; j++)
         {
             sumWeights += coeff[i][j];
@@ -72,6 +81,9 @@ int main()
         nodeWeights[i] = sumWeights;
     }
 
+    vector<Cluster> clusters;
+
+    
     while (!isEmptyClusters(nodeWeights))
     {
         auto maxElementIter = std::max_element(nodeWeights.begin(), nodeWeights.end());
@@ -86,6 +98,11 @@ int main()
         cout << "The nodes adjacent to this are: \n\n";
 
         nodeWeights[maxElementIndex] = INT_MIN;
+        Node maxNode(maxElementIndex, maxElementIndex);
+
+        Cluster currCluster;
+
+        currCluster.nodes.push_back(maxNode);
 
         for (size_t j = 0; j < 150; j++)
         {
@@ -93,10 +110,16 @@ int main()
             {
                 cout << "Node " << j << " with the value of " << coeff[maxElementIndex][j] << endl;
                 nodeWeights[j] = INT_MIN;
+                Node connnectedNode(j, j);
+                Edge edgetoMax(maxNode, connnectedNode, coeff[maxElementIndex][j]);
+                currCluster.edges.push_back(edgetoMax);
+                currCluster.nodes.push_back(connnectedNode);
             }
         }
+        clusters.push_back(currCluster);
+
         std::this_thread::sleep_for(std::chrono::seconds(5));
-        
+
     }
 
     
