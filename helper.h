@@ -5,12 +5,15 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
+#include <cctype>
+#include <chrono>
+#include <thread>
+#include <random>
 
 using namespace std;
 
 // function to shuffle rows
-// float signature[150];
-void shuFFleing(vector<vector<float>> &a)
+void shuFFleing(vector<vector<double>> &a)
 {
     srand(time(NULL));
     int rows = a.size();
@@ -27,9 +30,9 @@ void shuFFleing(vector<vector<float>> &a)
 
 struct Signature
 {
-    float mean;
-    float sum;
-    float signature;
+    double mean;
+    double sum;
+    double signature;
 
     void findSignature()
     {
@@ -43,7 +46,7 @@ struct Signature
 };
 
 // calculating mean and sum in rows
-void calc(vector<vector<float>> &a)
+void calc(vector<vector<double>> &a)
 {
 
     int rows = a.size();
@@ -93,14 +96,14 @@ void calc(vector<vector<float>> &a)
 
 struct Pearson
 {
-    float sum_X;
-    float sum_Y;
-    float sum_XX;
-    float sum_YY;
-    float sum_XY;
-    float n;
-    float squareSum_X;
-    float squareSum_Y;
+    double sum_X;
+    double sum_Y;
+    double sum_XX;
+    double sum_YY;
+    double sum_XY;
+    double n;
+    double squareSum_X;
+    double squareSum_Y;
 
     Pearson(int sz)
     {
@@ -108,9 +111,9 @@ struct Pearson
         sum_X = sum_Y = sum_XX = sum_YY = sum_XY = squareSum_X = squareSum_Y = 0;
     }
 
-    float getCoorelationCoeff()
+    double getCoorelationCoeff()
     {
-        float num = 0, den = 0;
+        double num = 0, den = 0;
         num = (n * sum_XY) - (sum_X * sum_Y);
         den = std::sqrt(((n * squareSum_X) - (sum_X * sum_X)) * ((n * squareSum_Y) - (sum_Y * sum_Y)));
 
@@ -118,20 +121,49 @@ struct Pearson
     }
 };
 
-float correlationCoefficient(vector<float> &x, vector<float> &y, float size)
+double pearson(const std::vector<double>& x, const std::vector<double>& y)
 {
-    Pearson pearson(size);
+  // Check that the two sets of data have the same number of elements
+  if (x.size() != y.size())
+  {
+    std::cerr << "Error: sets of data have different sizes" << std::endl;
+    return 0;
+  }
 
-    for (int i = 0; i < size; i++)
+  size_t n = x.size();
+
+  double sum_xy = 0;
+  double sum_x = 0;
+  double sum_y = 0;
+  double sum_x2 = 0;
+  double sum_y2 = 0;
+
+  // Calculate the sums
+  for (size_t i = 0; i < n; i++)
+  {
+    sum_xy += x[i] * y[i];
+    sum_x += x[i];
+    sum_y += y[i];
+    sum_x2 += x[i] * x[i];
+    sum_y2 += y[i] * y[i];
+  }
+
+  // Calculate the Pearson correlation coefficient
+  
+  double r = (n * sum_xy - sum_x * sum_y) /
+             std::sqrt((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y));
+
+  return r;
+}
+
+
+bool isEmptyClusters(vector<double> &nodeWeights) {
+    for (size_t i = 0; i < nodeWeights.size(); i++)
     {
-        pearson.sum_X += x[i];
-        pearson.sum_Y += y[i];
-        pearson.sum_XX += x[i] * x[i];
-        pearson.sum_YY += y[i] * y[i];
-        pearson.sum_XY += x[i] * y[i];
-        pearson.squareSum_X += (x[i] * x[i]);
-        pearson.squareSum_Y += (y[i] * y[i]);
+        if (nodeWeights[i] > INT_MIN)
+            return false;
     }
 
-    return pearson.getCoorelationCoeff();
+    return true;
+    
 }
