@@ -30,14 +30,13 @@ int main()
 
     shuFFleing(data);
 
-
     vector<vector<float>> coeff;
     coeff.resize(150);
     for (auto &row : coeff)
     {
         row.resize(150);
     }
-    
+
     for (size_t i = 0; i < 150; i++)
     {
         for (size_t j = 0; j < 150; j++)
@@ -53,15 +52,14 @@ int main()
     {
         for (size_t j = 0; j < 150; j++)
         {
-            if (coeff[i][j] < threshold) {
+            if (coeff[i][j] < threshold)
+            {
                 coeff[i][j] = 0;
             }
         }
-        
     }
-    
 
-    vector <float> nodeWeights;
+    vector<float> nodeWeights;
     nodeWeights.resize(150);
 
     for (size_t i = 0; i < 150; i++)
@@ -74,39 +72,34 @@ int main()
         nodeWeights[i] = sumWeights;
     }
 
-    auto maxElementIter = std::max_element(nodeWeights.begin(), nodeWeights.end());
-
-    // Calculate the index of the maximum element using std::distance
-    size_t maxElementIndex = std::distance(nodeWeights.begin(), maxElementIter);
-
-    cout << "Your cluster is :\n";
-
-    cout << "Node " << maxElementIndex << " with the value " << *maxElementIter << endl;
-
-    cout << "The nodes adjacent to this are: \n\n";
-
-
-    for (size_t j = 0; j < 150; j++)
+    while (!isEmptyClusters(nodeWeights))
     {
-        if (coeff[maxElementIndex][j] != 0) {
-            cout << "Node " << j << " with the value of " << coeff[maxElementIndex][j] << endl;
+        auto maxElementIter = std::max_element(nodeWeights.begin(), nodeWeights.end());
+
+        // Calculate the index of the maximum element using std::distance
+        size_t maxElementIndex = std::distance(nodeWeights.begin(), maxElementIter);
+
+        cout << "Your cluster is :\n";
+
+        cout << "Node " << maxElementIndex << " with the value " << *maxElementIter << endl;
+
+        cout << "The nodes adjacent to this are: \n\n";
+
+        nodeWeights[maxElementIndex] = INT_MIN;
+
+        for (size_t j = 0; j < 150; j++)
+        {
+            if (coeff[maxElementIndex][j] != 0)
+            {
+                cout << "Node " << j << " with the value of " << coeff[maxElementIndex][j] << endl;
+                nodeWeights[j] = INT_MIN;
+            }
         }
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        
     }
 
-
     
-    // // file to store final output data
-    // ofstream myfile;
-    // myfile.open("outputTASK2.txt");
-    // for (int i = 0; i < 150; i++)
-    // {
-    //     for (int j = 0; j < 4; j++)
-    //     {
-    //         myfile << data[i][j] << " \t";
-    //     }
-    //     myfile << endl;
-    // }
-    // myfile.close();
 
     return 0;
 }
