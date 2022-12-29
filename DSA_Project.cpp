@@ -1,21 +1,16 @@
 #include "DSAProject.h"
 
-
-DSA_Project::DSA_Project() {
+DSA_Project::DSA_Project()
+{
     rows = cols = 0;
 }
 
-bool isEmptyClusters(vector<double> &nodeWeights) {
-    for (size_t i = 0; i < nodeWeights.size(); i++)
-    {
-        if (nodeWeights[i] > INT_MIN)
-            return false;
-    }
+bool DSA_Project::isEmptyClusters()
+{
+    auto it = std::find_if(nodeWeights.begin(), nodeWeights.end(), [](double x) { return x > INT_MIN; });
 
-    return true;
-    
+    return it != nodeWeights.end();
 }
-
 
 void DSA_Project::readFileData(string filename)
 {
@@ -59,11 +54,11 @@ void DSA_Project::outputCoorelationToFile(string filename)
     }
     else
     {
-        for (int i = 0; i < rows; i++)
+        for (auto &row : coorelationMatrix)
         {
-            for (int j = 0; j < rows; j++)
+            for (double i : row)
             {
-                output << coorelationMatrix[i][j] << '\t';
+                output << i << '\t';
             }
             output << endl;
         }
@@ -149,15 +144,9 @@ void DSA_Project::runtask1()
 
 void DSA_Project::shuffling()
 {
-    srand(time(NULL));
-    for (int i = 0; i < 150; i++)
-    {
-        int row = rand() % 150;
-        for (int j = 0; j < 4; j++)
-        {
-            swap(inputData[i][j], inputData[row][j]);
-        }
-    }
+    random_device rd;                     
+    mt19937 gen(rd());                    
+    shuffle(inputData.begin(), inputData.end(), gen);
 }
 
 // calculating mean and sum in rows
@@ -167,10 +156,7 @@ void DSA_Project::calc()
     {
         float rowsum = 0;
         float rowmean = 0;
-        for (int j = 0; j < 4; j++)
-        {
-            rowsum = rowsum + inputData[i][j];
-        }
+        rowsum = accumulate(inputData[i].begin(), inputData[i].end(), 0);
         signatures[i].sum = rowsum;
         signatures[i].calcMean(cols);
         signatures[i].calcSignature();
@@ -221,7 +207,7 @@ void DSA_Project::editMatrixBasedOnThreshold()
 {
     cout << "Enter a threshold value for the edges: ";
     double threshold;
-    cin >> threshold; 
+    cin >> threshold;
 
     for (size_t i = 0; i < rows; i++)
     {
@@ -240,19 +226,14 @@ void DSA_Project::setNodeWeights()
     nodeWeights.resize(rows);
     for (size_t i = 0; i < rows; i++)
     {
-        double sumWeights = 0;
-        for (size_t j = 0; j < rows; j++)
-        {
-            sumWeights += coorelationMatrix[i][j];
-        }
-        nodeWeights[i] = sumWeights;
+        nodeWeights[i] = accumulate(coorelationMatrix[i].begin(), coorelationMatrix[i].end(), 0);
     }
 }
 
 void DSA_Project::setClusters()
 {
 
-    while (!isEmptyClusters(nodeWeights))
+    while (!isEmptyClusters())
     {
         auto maxElementIter = std::max_element(nodeWeights.begin(), nodeWeights.end());
 
@@ -300,4 +281,3 @@ void DSA_Project::runtask3()
     setNodeWeights();
     setClusters();
 }
-
