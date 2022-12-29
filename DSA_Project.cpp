@@ -1,5 +1,77 @@
 #include "DSAProject.h"
 
+
+DSA_Project::DSA_Project() {
+    rows = cols = 0;
+}
+
+bool isEmptyClusters(vector<double> &nodeWeights) {
+    for (size_t i = 0; i < nodeWeights.size(); i++)
+    {
+        if (nodeWeights[i] > INT_MIN)
+            return false;
+    }
+
+    return true;
+    
+}
+
+
+void DSA_Project::readFileData(string filename)
+{
+    input.open(filename);
+    if (!input.is_open())
+    {
+        cout << "Unable to open file " << filename << endl;
+        return;
+    }
+    else
+    {
+        int rows, cols;
+        input >> rows;
+        input >> cols;
+        this->rows = rows;
+        this->cols = cols;
+        inputData.resize(rows);
+        for (int row = 0; row < rows; row++)
+        {
+            inputData[row].resize(cols);
+        }
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                input >> inputData[i][j];
+            }
+        }
+    }
+
+    input.close();
+}
+
+void DSA_Project::outputCoorelationToFile(string filename)
+{
+    output.open(filename);
+    if (!output.is_open())
+    {
+        cout << "Unable to open file " << filename << endl;
+        return;
+    }
+    else
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                output << coorelationMatrix[i][j] << '\t';
+            }
+            output << endl;
+        }
+
+        output.close();
+    }
+}
+
 double DSA_Project::correlationCoefficient(vector<double> &x, vector<double> &y, int size)
 {
     double sum_X = 0, sum_Y = 0, sum_XY = 0, squareSum_X = 0, squareSum_Y = 0, n = 0;
@@ -48,45 +120,12 @@ void DSA_Project::mean()
     }
 }
 
-void DSA_Project::runtask1()
+void DSA_Project::getCoorelationMatrix()
 {
-
-    input.open("data.txt", ios::in); // write your input txt file here
-    if (!input)
-    {
-        cout << "No such file";
-    }
-    else
-    {
-        string line;
-        int rows, cols;
-        input >> rows;
-        input >> cols;
-        this->rows = rows;
-        this->cols = cols;
-        inputData.resize(rows);
-        for (int row = 0; row < rows; row++)
-        {
-            inputData[row].resize(cols);
-        }
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                input >> inputData[i][j];
-            }
-        }
-    }
-    input.close();
-
-    // file to store final output data
-
-    output.open("Task1Output.txt");
-
     coorelationMatrix.resize(rows);
     for (int i = 0; i < rows; i++)
     {
-        coorelationMatrix[i].resize(cols);
+        coorelationMatrix[i].resize(rows);
     }
 
     for (int i = 0; i < rows; i++)
@@ -96,19 +135,16 @@ void DSA_Project::runtask1()
             coorelationMatrix[i][j] = correlationCoefficient(inputData[i], inputData[j], cols);
         }
     }
+}
 
-    cout << endl;
+void DSA_Project::runtask1()
+{
 
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < rows; j++)
-        {
-            output << coorelationMatrix[i][j] << '\t';
-        }
-        output << endl;
-    }
+    readFileData("data.txt");
 
-    output.close();
+    getCoorelationMatrix();
+
+    outputCoorelationToFile("Task1Output.txt");
 }
 
 void DSA_Project::shuffling()
@@ -151,35 +187,21 @@ void DSA_Project::calc()
                     swap(inputData[i][k], inputData[j][k]);
                 }
             }
+            swap(signatures[j].signature, signatures[i].signature);
         }
     }
 }
 
 void DSA_Project::runtask2()
 {
-    input.open("data.txt", ios::in);
-    if (!input)
-    {
-        cout << "No such file";
-    }
-    else
-    {
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                input >> inputData[i][j];
-            }
-        }
-    }
-    input.close();
+    readFileData("data.txt");
     cout << endl;
 
     shuffling();
     calc();
 
     // file to store final output data
-    output.open("outputTASK2BeforeApplyring Task1.txt");
+    output.open("outputTASK2BeforeApplyringTask1.txt");
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < cols; j++)
@@ -190,73 +212,20 @@ void DSA_Project::runtask2()
     }
     output.close();
 
-    output.open("outputTask2AfterDoingTask1.txt");
+    getCoorelationMatrix();
 
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < rows; j++)
-        {
-            coorelationMatrix[i][j] = correlationCoefficient(inputData[i], inputData[j], cols);
-        }
-    }
-
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < rows; j++)
-        {
-            output << coorelationMatrix[i][j] << '\t';
-        }
-        output << endl;
-    }
-
-    output.close();
+    outputCoorelationToFile("outputTask2AfterDoingTask1.txt");
 }
 
-
-void DSA_Project::runtask3()
+void DSA_Project::editMatrixBasedOnThreshold()
 {
-    input.open("data.txt", ios::in);
-    if (!input)
-    {
-        cout << "No such file";
-    }
-    else
-    {
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                input >> inputData[i][j];
-            }
-        }
-    }
-    input.close();
-    cout << endl;
-
-    shuffling();
-
-    ofstream output("outputTask3(CoorelationMatrix).txt");
-    for (size_t i = 0; i < 150; i++)
-    {
-        for (size_t j = 0; j < 150; j++)
-        {
-            coorelationMatrix[i][j] = correlationCoefficient(inputData[i], inputData[j], cols);
-            output << coorelationMatrix[i][j] << " ";
-            
-        }
-        output << endl;
-    }
-    output.close();
-    cout << endl;
-
-
-
     cout << "Enter a threshold value for the edges: ";
     double threshold;
-    cin >> threshold;
-    for (size_t i = 0; i < 150; i++)
+    cin >> threshold; 
+
+    for (size_t i = 0; i < rows; i++)
     {
-        for (size_t j = 0; j < 150; j++)
+        for (size_t j = 0; j < rows; j++)
         {
             if (coorelationMatrix[i][j] < threshold)
             {
@@ -264,23 +233,25 @@ void DSA_Project::runtask3()
             }
         }
     }
+}
 
-    vector<double> nodeWeights;
-    nodeWeights.resize(150);
-
-    for (size_t i = 0; i < 150; i++)
+void DSA_Project::setNodeWeights()
+{
+    nodeWeights.resize(rows);
+    for (size_t i = 0; i < rows; i++)
     {
         double sumWeights = 0;
-        for (size_t j = 0; j < 150; j++)
+        for (size_t j = 0; j < rows; j++)
         {
             sumWeights += coorelationMatrix[i][j];
         }
         nodeWeights[i] = sumWeights;
     }
+}
 
-    vector<Cluster> clusters;
+void DSA_Project::setClusters()
+{
 
-    
     while (!isEmptyClusters(nodeWeights))
     {
         auto maxElementIter = std::max_element(nodeWeights.begin(), nodeWeights.end());
@@ -316,7 +287,17 @@ void DSA_Project::runtask3()
         clusters.push_back(currCluster);
 
         std::this_thread::sleep_for(std::chrono::seconds(5));
-
     }
-
 }
+
+void DSA_Project::runtask3()
+{
+    readFileData("data.txt");
+    shuffling();
+    getCoorelationMatrix();
+    outputCoorelationToFile("outputTask3(CoorelationMatrix).txt");
+    editMatrixBasedOnThreshold();
+    setNodeWeights();
+    setClusters();
+}
+
