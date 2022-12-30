@@ -1,3 +1,14 @@
+/**
+ * @file DSAProject.h
+ * @author Hammad Anwer 2021189, Mian Akbar Jan 2021295
+ * @brief Stores the definition of the DSA_Projects class that has all the methods and attributes
+ * @version 0.1
+ * @date 2022-12-30
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -15,28 +26,29 @@
 #include <time.h>
 #include <numeric>
 
-
 using namespace std;
 
-struct Signature;
+// Store and calculate the signature values for each row the data
+
+
+// Struct prototypes
 struct Node;
 struct Edge;
 struct Cluster;
 
-
 class DSA_Project
 {
 private:
-    fstream input;
-    fstream output;
-    int rows;
-    int cols;
+    ifstream input; // stores the data for input file
+    ofstream output; // stores the data for the output file
+    int rows; // stores the number of rows of the data set
+    int cols; // stores the number of cols of the data set
 
     vector<vector<double>> inputData;
     vector<vector<double>> coorelationMatrix;
     vector<vector<int>> discretizedMatrix;
-    unordered_map<int, Signature> signatures;   
-    vector<double> nodeWeights; 
+    vector<double> signatures;
+    vector<double> nodeWeights;
     vector<Cluster> clusters;
 
     double correlationCoefficient(vector<double> &x, vector<double> &y, int size);
@@ -48,45 +60,26 @@ private:
     void outputCoorelationToFile(string filename);
     void getCoorelationMatrix();
     void editMatrixBasedOnThreshold();
-    void setNodeWeights();  
+    void setNodeWeights();
     void setClusters();
     bool isEmptyClusters();
 
 public:
     DSA_Project();
     void runtask1();
-    void runtask2(); 
+    void runtask2();
     void runtask3();
 };
 
-
-struct Signature {
-    double mean;
-    double sum;
-    double signature;
-
-    Signature(double mean = 0, double sum = 0) {
-        this->mean = mean;
-        this->sum = sum;
-        this->signature = 0;
-    }
-    
-    void calcMean(int size) {
-        this->mean = this->sum / size;
-    }
-
-    void calcSignature() {
-        this->signature = this->mean * this->sum;
-    }
-};
-
-class Node {
-    public:
+class Node
+{
+public:
     int x;
     int y;
     double weight;
 
-    Node(int x = 0, int y = 0, double w = 0) {
+    Node(int x = 0, int y = 0, double w = 0)
+    {
         this->x = x;
         this->y = y;
     }
@@ -94,24 +87,23 @@ class Node {
 
 class Edge
 {
-    public:
+public:
     Node from;
     Node to;
     float weight;
-    Edge(Node &from, Node &to, double weight) {
+    Edge(Node &from, Node &to, double weight)
+    {
         this->from = from;
         this->to = to;
         this->weight = weight;
     }
 };
 
-class Cluster {
-    public:
+class Cluster
+{
+public:
     vector<Node> nodes;
-    vector<Edge> edges;  
+    vector<Edge> edges;
 };
-
-
-
 
 

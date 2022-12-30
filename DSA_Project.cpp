@@ -1,5 +1,6 @@
 #include "DSAProject.h"
 
+
 DSA_Project::DSA_Project()
 {
     rows = cols = 0;
@@ -7,9 +8,11 @@ DSA_Project::DSA_Project()
 
 bool DSA_Project::isEmptyClusters()
 {
-    auto it = std::find_if(nodeWeights.begin(), nodeWeights.end(), [](double x) { return x > INT_MIN; });
+    for (int i = 0; i < nodeWeights.size(); i++)
+        if (nodeWeights[i] > INT_MIN)
+            return false;
 
-    return it != nodeWeights.end();
+    return true;
 }
 
 void DSA_Project::readFileData(string filename)
@@ -54,13 +57,9 @@ void DSA_Project::outputCoorelationToFile(string filename)
     }
     else
     {
-        for (auto &row : coorelationMatrix)
+        for (int i = 0; i < 150; i++)
         {
-            for (double i : row)
-            {
-                output << i << '\t';
-            }
-            output << endl;
+            output << signatures[i] << endl;
         }
 
         output.close();
@@ -144,36 +143,32 @@ void DSA_Project::runtask1()
 
 void DSA_Project::shuffling()
 {
-    random_device rd;                     
-    mt19937 gen(rd());                    
+    random_device rd;
+    mt19937 gen(rd());
     shuffle(inputData.begin(), inputData.end(), gen);
 }
 
 // calculating mean and sum in rows
 void DSA_Project::calc()
 {
+    signatures.resize(150);
     for (int i = 0; i < rows; i++)
     {
-        float rowsum = 0;
-        float rowmean = 0;
+        double rowsum = 0;
+        double rowmean = 0;
         rowsum = accumulate(inputData[i].begin(), inputData[i].end(), 0);
-        signatures[i].sum = rowsum;
-        signatures[i].calcMean(cols);
-        signatures[i].calcSignature();
+        rowmean = rowsum / cols;
+        signatures[i] = rowmean * rowsum;
     }
 
-    for (int i = 0; i < rows - 1; i++)
-    {
-        for (int j = i + 1; j < rows; j++)
-        {
-            if (signatures[j].signature < signatures[i].signature)
-            {
-                for (int k = 0; k < this->cols; k++)
-                {
+    for (int i = 0 ; i < rows - 1; i++) {
+        for (int j = i + 1; j < rows; j++) {
+            if (signatures[j] < signatures[i]) {
+                for (int k = 0; k < cols; k++) {
                     swap(inputData[i][k], inputData[j][k]);
                 }
+                swap(signatures[j], signatures[i]);
             }
-            swap(signatures[j].signature, signatures[i].signature);
         }
     }
 }
@@ -253,7 +248,7 @@ void DSA_Project::setClusters()
 
         currCluster.nodes.push_back(maxNode);
 
-        for (size_t j = 0; j < 150; j++)
+        for (size_t j = 0; j < rows; j++)
         {
             if (coorelationMatrix[maxElementIndex][j] != 0)
             {
@@ -281,3 +276,4 @@ void DSA_Project::runtask3()
     setNodeWeights();
     setClusters();
 }
+
