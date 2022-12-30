@@ -45,8 +45,9 @@ private:
     int cols; // stores the number of cols of the data set
 
     vector<vector<double>> inputData;
+    vector<vector<double>> permutedData;
     vector<vector<double>> coorelationMatrix;
-    vector<vector<int>> discretizedMatrix;
+    vector<vector<int>> permuatedCoorelation;
     vector<double> signatures;
     vector<double> nodeWeights;
     vector<Cluster> clusters;
@@ -63,6 +64,7 @@ private:
     void setNodeWeights();
     void setClusters();
     bool isEmptyClusters();
+    void getPermutatedCoorelation();
 
 public:
     DSA_Project();
@@ -105,5 +107,6 @@ public:
     vector<Node> nodes;
     vector<Edge> edges;
 };
+
 
 

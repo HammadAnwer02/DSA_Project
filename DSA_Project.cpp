@@ -1,6 +1,5 @@
 #include "DSAProject.h"
 
-
 DSA_Project::DSA_Project()
 {
     rows = cols = 0;
@@ -57,10 +56,7 @@ void DSA_Project::outputCoorelationToFile(string filename)
     }
     else
     {
-        for (int i = 0; i < 150; i++)
-        {
-            output << signatures[i] << endl;
-        }
+        
 
         output.close();
     }
@@ -145,7 +141,17 @@ void DSA_Project::shuffling()
 {
     random_device rd;
     mt19937 gen(rd());
-    shuffle(inputData.begin(), inputData.end(), gen);
+
+    permutedData.resize(rows);
+    for (int i = 0; i < inputData.size(); i++)
+    {
+        permutedData[i].resize(cols);
+        for (int j = 0; j < inputData[0].size(); j++)
+        {
+            permutedData[i][j] = inputData[i][j];
+        }
+    }
+    shuffle(permutedData.begin(), permutedData.end(), gen);
 }
 
 // calculating mean and sum in rows
@@ -173,6 +179,22 @@ void DSA_Project::calc()
     }
 }
 
+void DSA_Project::getPermutatedCoorelation() {
+    permuatedCoorelation.resize(rows);
+    for (int i = 0; i < rows; i++)
+    {
+        permuatedCoorelation[i].resize(rows);
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < rows; j++)
+        {
+            permuatedCoorelation[i][j] = correlationCoefficient(permutedData[i], permutedData[j], cols);
+        }
+    }
+}
+
 void DSA_Project::runtask2()
 {
     readFileData("data.txt");
@@ -192,7 +214,7 @@ void DSA_Project::runtask2()
         output << endl;
     }
     output.close();
-
+    getPermutatedCoorelation();
     getCoorelationMatrix();
 
     outputCoorelationToFile("outputTask2AfterDoingTask1.txt");
@@ -276,4 +298,3 @@ void DSA_Project::runtask3()
     setNodeWeights();
     setClusters();
 }
-
