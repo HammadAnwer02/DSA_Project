@@ -65,6 +65,7 @@ private:
     void setClusters();
     bool isEmptyClusters();
     void getPermutatedCoorelation();
+    void getPermutatedMean();
 
 public:
     DSA_Project();
