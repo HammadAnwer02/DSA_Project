@@ -1,14 +1,14 @@
 #include "matrix.h"
 #include "./ui_matrix.h"
 
-Matrix::Matrix(QWidget *parent)
+matrix::matrix(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::Matrix)
+    , ui(new Ui::matrix)
 {
     ui->setupUi(this);
 }
 
-Matrix::~Matrix()
+matrix::~matrix()
 {
     delete ui;
 }

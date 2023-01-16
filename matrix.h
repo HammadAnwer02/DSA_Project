@@ -1,26 +1,21 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <QtCore/qglobal.h>
-#if QT_VERSION >= 0x050000
-#include <QtWidgets/QMainWindow>
-#else
-#include <QtGui/QMainWindow>
-#endif
+#include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Matrix; }
+namespace Ui { class matrix; }
 QT_END_NAMESPACE
 
-class Matrix : public QMainWindow
+class matrix : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Matrix(QWidget *parent = nullptr);
-    ~Matrix();
+    matrix(QWidget *parent = nullptr);
+    ~matrix();
 
 private:
-    Ui::Matrix *ui;
+    Ui::matrix *ui;
 };
 #endif // MATRIX_H
